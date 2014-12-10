@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="92f5c026e7964bb4b0579ff5bdf67e0f" Name="Diagram1">
+        <EntityTypeShape EntityType="ScrumDBModel.Scrum" Width="1.5" PointX="0.75" PointY="4.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="ScrumDBModel.UserDetail" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="ScrumDBModel.UserScrum" Width="1.5" PointX="3" PointY="4.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="ScrumDBModel.UserScrumDetailBlocker" Width="1.5" PointX="5.25" PointY="2.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="ScrumDBModel.UserScrumDetailTodayTask" Width="1.5" PointX="5.25" PointY="4.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="ScrumDBModel.UserScrumDetailYesterdayTask" Width="1.5" PointX="5.25" PointY="7.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="ScrumDBModel.UserScrumDetailParkingLot" Width="1.5" PointX="7.75" PointY="1.625" IsExpanded="true" />
+        <AssociationConnector Association="ScrumDBModel.FK_UserScrums_Scrums" ManuallyRouted="false" />
+        <AssociationConnector Association="ScrumDBModel.FK_UserScrums_User" ManuallyRouted="false" />
+        <AssociationConnector Association="ScrumDBModel.FK_UserScrumDetailBlocker_UserScrum" ManuallyRouted="false" />
+        <AssociationConnector Association="ScrumDBModel.FK_UserScrumDetailTodayTask_UserScrum" ManuallyRouted="false" />
+        <AssociationConnector Association="ScrumDBModel.FK_UserScrumDetailYesterdayTask_UserScrum" ManuallyRouted="false" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

@@ -1,0 +1,645 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="ScrumDBModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Scrum">
+          <Key>
+            <PropertyRef Name="ScrumID" />
+          </Key>
+          <Property Name="ScrumID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="DailyOccursTime" Type="char" MaxLength="16" Nullable="false" />
+          <Property Name="DaysOfOccurence" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="IsActive" Type="bit" Nullable="false" />
+          <Property Name="Description" Type="varchar" MaxLength="255" />
+          <Property Name="Remainder" Type="char" MaxLength="16" />
+          <Property Name="CreatedBy" Type="int" />
+          <Property Name="TimeZone" Type="varchar" MaxLength="5" />
+        </EntityType>
+        <EntityType Name="UserDetails">
+          <Key>
+            <PropertyRef Name="UserID" />
+          </Key>
+          <Property Name="UserID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="FirstName" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="LastName" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="Email" Type="varchar" MaxLength="200" Nullable="false" />
+          <Property Name="Password" Type="varbinary" MaxLength="100" Nullable="false" />
+          <Property Name="Image" Type="varbinary(max)" />
+          <Property Name="TimeZone" Type="varchar" MaxLength="5" />
+        </EntityType>
+        <EntityType Name="UserScrum">
+          <Key>
+            <PropertyRef Name="UserScrumID" />
+          </Key>
+          <Property Name="UserScrumID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="UserID" Type="int" Nullable="false" />
+          <Property Name="ScrumID" Type="int" Nullable="false" />
+          <Property Name="IsActive" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="UserScrumDetailBlocker">
+          <Key>
+            <PropertyRef Name="UserScrumDetailBlockerID" />
+          </Key>
+          <Property Name="UserScrumDetailBlockerID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="UserScrumID" Type="int" />
+          <Property Name="Date" Type="date" />
+          <Property Name="Blocker" Type="nvarchar" MaxLength="255" Nullable="false" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'ScrumDB.dbo.UserScrumDetailParkingLot' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="UserScrumDetailParkingLot">
+          <Key>
+            <PropertyRef Name="UserScrumDetailParkingLotID" />
+            <PropertyRef Name="ParkingLot" />
+          </Key>
+          <Property Name="UserScrumDetailParkingLotID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="UserScrumID" Type="int" />
+          <Property Name="Date" Type="date" />
+          <Property Name="ParkingLot" Type="varchar" MaxLength="255" Nullable="false" />
+          <Property Name="Priority" Type="varchar" MaxLength="2" />
+        </EntityType>
+        <EntityType Name="UserScrumDetailTodayTask">
+          <Key>
+            <PropertyRef Name="UserScrumDetailTodayTask" />
+          </Key>
+          <Property Name="UserScrumDetailTodayTask" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="UserScrumID" Type="int" />
+          <Property Name="Date" Type="date" />
+          <Property Name="Task" Type="varchar" MaxLength="255" Nullable="false" />
+          <Property Name="Priority" Type="varchar" MaxLength="2" />
+        </EntityType>
+        <EntityType Name="UserScrumDetailYesterdayTask">
+          <Key>
+            <PropertyRef Name="UserScrumDetailYesterdayTaskID" />
+          </Key>
+          <Property Name="UserScrumDetailYesterdayTaskID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="UserScrumID" Type="int" />
+          <Property Name="Date" Type="date" />
+          <Property Name="Task" Type="varchar" MaxLength="255" Nullable="false" />
+          <Property Name="Priority" Type="varchar" MaxLength="2" />
+        </EntityType>
+        <Association Name="FK_UserScrumDetailBlocker_UserScrum">
+          <End Role="UserScrum" Type="Self.UserScrum" Multiplicity="0..1" />
+          <End Role="UserScrumDetailBlocker" Type="Self.UserScrumDetailBlocker" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UserScrum">
+              <PropertyRef Name="UserScrumID" />
+            </Principal>
+            <Dependent Role="UserScrumDetailBlocker">
+              <PropertyRef Name="UserScrumID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UserScrumDetailTodayTask_UserScrum">
+          <End Role="UserScrum" Type="Self.UserScrum" Multiplicity="0..1" />
+          <End Role="UserScrumDetailTodayTask" Type="Self.UserScrumDetailTodayTask" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UserScrum">
+              <PropertyRef Name="UserScrumID" />
+            </Principal>
+            <Dependent Role="UserScrumDetailTodayTask">
+              <PropertyRef Name="UserScrumID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UserScrumDetailYesterdayTask_UserScrum">
+          <End Role="UserScrum" Type="Self.UserScrum" Multiplicity="0..1" />
+          <End Role="UserScrumDetailYesterdayTask" Type="Self.UserScrumDetailYesterdayTask" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UserScrum">
+              <PropertyRef Name="UserScrumID" />
+            </Principal>
+            <Dependent Role="UserScrumDetailYesterdayTask">
+              <PropertyRef Name="UserScrumID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UserScrums_Scrums">
+          <End Role="Scrum" Type="Self.Scrum" Multiplicity="1" />
+          <End Role="UserScrum" Type="Self.UserScrum" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Scrum">
+              <PropertyRef Name="ScrumID" />
+            </Principal>
+            <Dependent Role="UserScrum">
+              <PropertyRef Name="ScrumID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UserScrums_User">
+          <End Role="UserDetails" Type="Self.UserDetails" Multiplicity="1" />
+          <End Role="UserScrum" Type="Self.UserScrum" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UserDetails">
+              <PropertyRef Name="UserID" />
+            </Principal>
+            <Dependent Role="UserScrum">
+              <PropertyRef Name="UserID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Function Name="AddUserScrumStatus" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="email" Type="varchar" Mode="In" />
+          <Parameter Name="scrumID" Type="int" Mode="In" />
+          <Parameter Name="yesterdayTask" Type="varchar(max)" Mode="In" />
+          <Parameter Name="todayTask" Type="varchar(max)" Mode="In" />
+          <Parameter Name="blockerTask" Type="varchar(max)" Mode="In" />
+          <Parameter Name="parkingLot" Type="varchar(max)" Mode="In" />
+          <Parameter Name="yesterdayTaskLength" Type="int" Mode="In" />
+          <Parameter Name="todayTaskLength" Type="int" Mode="In" />
+          <Parameter Name="blockerTaskLength" Type="int" Mode="In" />
+          <Parameter Name="parkingLotLength" Type="int" Mode="In" />
+        </Function>
+        <Function Name="DeleteScrum" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="scrumID" Type="int" Mode="In" />
+        </Function>
+        <Function Name="GetAllScrumUsersByScrumID" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="scrumId" Type="int" Mode="In" />
+        </Function>
+        <Function Name="GetAllUserNames" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="email" Type="varchar" Mode="In" />
+          <Parameter Name="scrumID" Type="int" Mode="In" />
+          <Parameter Name="isautocomplete" Type="bit" Mode="In" />
+        </Function>
+        <Function Name="GetUserDeatilsByEmailAndPassword" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="emailId" Type="varchar" Mode="In" />
+          <Parameter Name="password" Type="varchar" Mode="In" />
+          <Parameter Name="encryptKey" Type="varchar" Mode="In" />
+        </Function>
+        <Function Name="RegisterNewUserDetails" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="firstName" Type="varchar" Mode="In" />
+          <Parameter Name="lastName" Type="varchar" Mode="In" />
+          <Parameter Name="emailId" Type="varchar" Mode="In" />
+          <Parameter Name="password" Type="varchar" Mode="In" />
+          <Parameter Name="timeZone" Type="varchar" Mode="In" />
+          <Parameter Name="encryptKey" Type="varchar" Mode="In" />
+          <Parameter Name="imageData" Type="varbinary(max)" Mode="In" />
+        </Function>
+        <Function Name="ResetPassword" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="email" Type="varchar" Mode="In" />
+          <Parameter Name="password" Type="char" Mode="In" />
+          <Parameter Name="encryptKey" Type="varchar" Mode="In" />
+        </Function>
+        <Function Name="UpdateScrumDetails" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="email" Type="varchar" Mode="In" />
+          <Parameter Name="scrumID" Type="int" Mode="In" />
+          <Parameter Name="scrumName" Type="varchar" Mode="In" />
+          <Parameter Name="description" Type="varchar" Mode="In" />
+          <Parameter Name="daysOfOccurence" Type="varchar" Mode="In" />
+          <Parameter Name="dailyOccursTime" Type="char" Mode="In" />
+          <Parameter Name="remainder" Type="char" Mode="In" />
+          <Parameter Name="timeZone" Type="varchar" Mode="In" />
+          <Parameter Name="isActive" Type="int" Mode="In" />
+          <Parameter Name="users" Type="varchar(max)" Mode="In" />
+          <Parameter Name="removeUsers" Type="varchar(max)" Mode="In" />
+          <Parameter Name="usersLength" Type="int" Mode="In" />
+          <Parameter Name="removeUsersLength" Type="int" Mode="In" />
+        </Function>
+        <Function Name="UpdateUserScrumStatus" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="userId" Type="int" Mode="In" />
+          <Parameter Name="scrumID" Type="int" Mode="In" />
+          <Parameter Name="scrumYesterdayText" Type="varchar(max)" Mode="In" />
+          <Parameter Name="scrumTodayText" Type="varchar(max)" Mode="In" />
+          <Parameter Name="blockers" Type="varchar" Mode="In" />
+        </Function>
+        <EntityContainer Name="ScrumDBModelStoreContainer">
+          <EntitySet Name="Scrum" EntityType="Self.Scrum" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="UserDetails" EntityType="Self.UserDetails" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="UserScrum" EntityType="Self.UserScrum" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="UserScrumDetailBlocker" EntityType="Self.UserScrumDetailBlocker" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="UserScrumDetailTodayTask" EntityType="Self.UserScrumDetailTodayTask" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="UserScrumDetailYesterdayTask" EntityType="Self.UserScrumDetailYesterdayTask" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="UserScrumDetailParkingLot" EntityType="Self.UserScrumDetailParkingLot" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+[UserScrumDetailParkingLot].[UserScrumDetailParkingLotID] AS [UserScrumDetailParkingLotID], 
+[UserScrumDetailParkingLot].[UserScrumID] AS [UserScrumID], 
+[UserScrumDetailParkingLot].[Date] AS [Date], 
+[UserScrumDetailParkingLot].[ParkingLot] AS [ParkingLot], 
+[UserScrumDetailParkingLot].[Priority] AS [Priority]
+FROM [dbo].[UserScrumDetailParkingLot] AS [UserScrumDetailParkingLot]</DefiningQuery>
+          </EntitySet>
+          <AssociationSet Name="FK_UserScrumDetailBlocker_UserScrum" Association="Self.FK_UserScrumDetailBlocker_UserScrum">
+            <End Role="UserScrum" EntitySet="UserScrum" />
+            <End Role="UserScrumDetailBlocker" EntitySet="UserScrumDetailBlocker" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UserScrumDetailTodayTask_UserScrum" Association="Self.FK_UserScrumDetailTodayTask_UserScrum">
+            <End Role="UserScrum" EntitySet="UserScrum" />
+            <End Role="UserScrumDetailTodayTask" EntitySet="UserScrumDetailTodayTask" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UserScrumDetailYesterdayTask_UserScrum" Association="Self.FK_UserScrumDetailYesterdayTask_UserScrum">
+            <End Role="UserScrum" EntitySet="UserScrum" />
+            <End Role="UserScrumDetailYesterdayTask" EntitySet="UserScrumDetailYesterdayTask" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UserScrums_Scrums" Association="Self.FK_UserScrums_Scrums">
+            <End Role="Scrum" EntitySet="Scrum" />
+            <End Role="UserScrum" EntitySet="UserScrum" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UserScrums_User" Association="Self.FK_UserScrums_User">
+            <End Role="UserDetails" EntitySet="UserDetails" />
+            <End Role="UserScrum" EntitySet="UserScrum" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="ScrumDBModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Scrum">
+          <Key>
+            <PropertyRef Name="ScrumID" />
+          </Key>
+          <Property Name="ScrumID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="DailyOccursTime" Type="String" MaxLength="16" FixedLength="true" Unicode="false" Nullable="false" />
+          <Property Name="DaysOfOccurence" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="IsActive" Type="Boolean" Nullable="false" />
+          <Property Name="Description" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="Remainder" Type="String" MaxLength="16" FixedLength="true" Unicode="false" />
+          <Property Name="CreatedBy" Type="Int32" />
+          <Property Name="TimeZone" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="UserScrums" Relationship="Self.FK_UserScrums_Scrums" FromRole="Scrum" ToRole="UserScrum" />
+        </EntityType>
+        <EntityType Name="UserDetail">
+          <Key>
+            <PropertyRef Name="UserID" />
+          </Key>
+          <Property Name="UserID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="FirstName" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="LastName" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Email" Type="String" MaxLength="200" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Password" Type="Binary" MaxLength="100" FixedLength="false" Nullable="false" />
+          <Property Name="Image" Type="Binary" MaxLength="Max" FixedLength="false" />
+          <Property Name="TimeZone" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="UserScrums" Relationship="Self.FK_UserScrums_User" FromRole="UserDetails" ToRole="UserScrum" />
+        </EntityType>
+        <EntityType Name="UserScrum">
+          <Key>
+            <PropertyRef Name="UserScrumID" />
+          </Key>
+          <Property Name="UserScrumID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UserID" Type="Int32" Nullable="false" />
+          <Property Name="ScrumID" Type="Int32" Nullable="false" />
+          <Property Name="IsActive" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="Scrum" Relationship="Self.FK_UserScrums_Scrums" FromRole="UserScrum" ToRole="Scrum" />
+          <NavigationProperty Name="UserDetail" Relationship="Self.FK_UserScrums_User" FromRole="UserScrum" ToRole="UserDetails" />
+          <NavigationProperty Name="UserScrumDetailBlockers" Relationship="Self.FK_UserScrumDetailBlocker_UserScrum" FromRole="UserScrum" ToRole="UserScrumDetailBlocker" />
+          <NavigationProperty Name="UserScrumDetailTodayTasks" Relationship="Self.FK_UserScrumDetailTodayTask_UserScrum" FromRole="UserScrum" ToRole="UserScrumDetailTodayTask" />
+          <NavigationProperty Name="UserScrumDetailYesterdayTasks" Relationship="Self.FK_UserScrumDetailYesterdayTask_UserScrum" FromRole="UserScrum" ToRole="UserScrumDetailYesterdayTask" />
+        </EntityType>
+        <EntityType Name="UserScrumDetailBlocker">
+          <Key>
+            <PropertyRef Name="UserScrumDetailBlockerID" />
+          </Key>
+          <Property Name="UserScrumDetailBlockerID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UserScrumID" Type="Int32" />
+          <Property Name="Date" Type="DateTime" Precision="0" />
+          <Property Name="Blocker" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="UserScrum" Relationship="Self.FK_UserScrumDetailBlocker_UserScrum" FromRole="UserScrumDetailBlocker" ToRole="UserScrum" />
+        </EntityType>
+        <EntityType Name="UserScrumDetailTodayTask">
+          <Key>
+            <PropertyRef Name="UserScrumDetailTodayTask1" />
+          </Key>
+          <Property Name="UserScrumDetailTodayTask1" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UserScrumID" Type="Int32" />
+          <Property Name="Date" Type="DateTime" Precision="0" />
+          <Property Name="Task" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Priority" Type="String" MaxLength="2" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="UserScrum" Relationship="Self.FK_UserScrumDetailTodayTask_UserScrum" FromRole="UserScrumDetailTodayTask" ToRole="UserScrum" />
+        </EntityType>
+        <EntityType Name="UserScrumDetailYesterdayTask">
+          <Key>
+            <PropertyRef Name="UserScrumDetailYesterdayTaskID" />
+          </Key>
+          <Property Name="UserScrumDetailYesterdayTaskID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UserScrumID" Type="Int32" />
+          <Property Name="Date" Type="DateTime" Precision="0" />
+          <Property Name="Task" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Priority" Type="String" MaxLength="2" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="UserScrum" Relationship="Self.FK_UserScrumDetailYesterdayTask_UserScrum" FromRole="UserScrumDetailYesterdayTask" ToRole="UserScrum" />
+        </EntityType>
+        <EntityType Name="UserScrumDetailParkingLot">
+          <Key>
+            <PropertyRef Name="UserScrumDetailParkingLotID" />
+            <PropertyRef Name="ParkingLot" />
+          </Key>
+          <Property Name="UserScrumDetailParkingLotID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UserScrumID" Type="Int32" />
+          <Property Name="Date" Type="DateTime" Precision="0" />
+          <Property Name="ParkingLot" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Priority" Type="String" MaxLength="2" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <Association Name="FK_UserScrums_Scrums">
+          <End Role="Scrum" Type="Self.Scrum" Multiplicity="1" />
+          <End Role="UserScrum" Type="Self.UserScrum" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Scrum">
+              <PropertyRef Name="ScrumID" />
+            </Principal>
+            <Dependent Role="UserScrum">
+              <PropertyRef Name="ScrumID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UserScrums_User">
+          <End Role="UserDetails" Type="Self.UserDetail" Multiplicity="1" />
+          <End Role="UserScrum" Type="Self.UserScrum" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UserDetails">
+              <PropertyRef Name="UserID" />
+            </Principal>
+            <Dependent Role="UserScrum">
+              <PropertyRef Name="UserID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UserScrumDetailBlocker_UserScrum">
+          <End Role="UserScrum" Type="Self.UserScrum" Multiplicity="0..1" />
+          <End Role="UserScrumDetailBlocker" Type="Self.UserScrumDetailBlocker" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UserScrum">
+              <PropertyRef Name="UserScrumID" />
+            </Principal>
+            <Dependent Role="UserScrumDetailBlocker">
+              <PropertyRef Name="UserScrumID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UserScrumDetailTodayTask_UserScrum">
+          <End Role="UserScrum" Type="Self.UserScrum" Multiplicity="0..1" />
+          <End Role="UserScrumDetailTodayTask" Type="Self.UserScrumDetailTodayTask" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UserScrum">
+              <PropertyRef Name="UserScrumID" />
+            </Principal>
+            <Dependent Role="UserScrumDetailTodayTask">
+              <PropertyRef Name="UserScrumID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UserScrumDetailYesterdayTask_UserScrum">
+          <End Role="UserScrum" Type="Self.UserScrum" Multiplicity="0..1" />
+          <End Role="UserScrumDetailYesterdayTask" Type="Self.UserScrumDetailYesterdayTask" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UserScrum">
+              <PropertyRef Name="UserScrumID" />
+            </Principal>
+            <Dependent Role="UserScrumDetailYesterdayTask">
+              <PropertyRef Name="UserScrumID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="ScrumEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Scrums" EntityType="Self.Scrum" />
+          <EntitySet Name="UserDetails" EntityType="Self.UserDetail" />
+          <EntitySet Name="UserScrums" EntityType="Self.UserScrum" />
+          <EntitySet Name="UserScrumDetailBlockers" EntityType="Self.UserScrumDetailBlocker" />
+          <EntitySet Name="UserScrumDetailTodayTasks" EntityType="Self.UserScrumDetailTodayTask" />
+          <EntitySet Name="UserScrumDetailYesterdayTasks" EntityType="Self.UserScrumDetailYesterdayTask" />
+          <EntitySet Name="UserScrumDetailParkingLots" EntityType="Self.UserScrumDetailParkingLot" />
+          <AssociationSet Name="FK_UserScrums_Scrums" Association="Self.FK_UserScrums_Scrums">
+            <End Role="Scrum" EntitySet="Scrums" />
+            <End Role="UserScrum" EntitySet="UserScrums" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UserScrums_User" Association="Self.FK_UserScrums_User">
+            <End Role="UserDetails" EntitySet="UserDetails" />
+            <End Role="UserScrum" EntitySet="UserScrums" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UserScrumDetailBlocker_UserScrum" Association="Self.FK_UserScrumDetailBlocker_UserScrum">
+            <End Role="UserScrum" EntitySet="UserScrums" />
+            <End Role="UserScrumDetailBlocker" EntitySet="UserScrumDetailBlockers" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UserScrumDetailTodayTask_UserScrum" Association="Self.FK_UserScrumDetailTodayTask_UserScrum">
+            <End Role="UserScrum" EntitySet="UserScrums" />
+            <End Role="UserScrumDetailTodayTask" EntitySet="UserScrumDetailTodayTasks" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UserScrumDetailYesterdayTask_UserScrum" Association="Self.FK_UserScrumDetailYesterdayTask_UserScrum">
+            <End Role="UserScrum" EntitySet="UserScrums" />
+            <End Role="UserScrumDetailYesterdayTask" EntitySet="UserScrumDetailYesterdayTasks" />
+          </AssociationSet>
+          <FunctionImport Name="AddUserScrumStatus">
+            <Parameter Name="email" Mode="In" Type="String" />
+            <Parameter Name="scrumID" Mode="In" Type="Int32" />
+            <Parameter Name="yesterdayTask" Mode="In" Type="String" />
+            <Parameter Name="todayTask" Mode="In" Type="String" />
+            <Parameter Name="blockerTask" Mode="In" Type="String" />
+            <Parameter Name="parkingLot" Mode="In" Type="String" />
+            <Parameter Name="yesterdayTaskLength" Mode="In" Type="Int32" />
+            <Parameter Name="todayTaskLength" Mode="In" Type="Int32" />
+            <Parameter Name="blockerTaskLength" Mode="In" Type="Int32" />
+            <Parameter Name="parkingLotLength" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="DeleteScrum">
+            <Parameter Name="scrumID" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="GetAllScrumUsersByScrumID" ReturnType="Collection(ScrumDBModel.GetAllScrumUsersByScrumID_Result)">
+            <Parameter Name="scrumId" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="GetAllUserNames" ReturnType="Collection(ScrumDBModel.GetAllUserNames_Result)">
+            <Parameter Name="email" Mode="In" Type="String" />
+            <Parameter Name="scrumID" Mode="In" Type="Int32" />
+            <Parameter Name="isautocomplete" Mode="In" Type="Boolean" />
+          </FunctionImport>
+          <FunctionImport Name="GetUserDeatilsByEmailAndPassword" ReturnType="Collection(ScrumDBModel.GetUserDeatilsByEmailAndPassword_Result)">
+            <Parameter Name="emailId" Mode="In" Type="String" />
+            <Parameter Name="password" Mode="In" Type="String" />
+            <Parameter Name="encryptKey" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="RegisterNewUserDetails">
+            <Parameter Name="firstName" Mode="In" Type="String" />
+            <Parameter Name="lastName" Mode="In" Type="String" />
+            <Parameter Name="emailId" Mode="In" Type="String" />
+            <Parameter Name="password" Mode="In" Type="String" />
+            <Parameter Name="timeZone" Mode="In" Type="String" />
+            <Parameter Name="encryptKey" Mode="In" Type="String" />
+            <Parameter Name="imageData" Mode="In" Type="Binary" />
+          </FunctionImport>
+          <FunctionImport Name="ResetPassword">
+            <Parameter Name="email" Mode="In" Type="String" />
+            <Parameter Name="password" Mode="In" Type="String" />
+            <Parameter Name="encryptKey" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="UpdateScrumDetails">
+            <Parameter Name="email" Mode="In" Type="String" />
+            <Parameter Name="scrumID" Mode="In" Type="Int32" />
+            <Parameter Name="scrumName" Mode="In" Type="String" />
+            <Parameter Name="description" Mode="In" Type="String" />
+            <Parameter Name="daysOfOccurence" Mode="In" Type="String" />
+            <Parameter Name="dailyOccursTime" Mode="In" Type="String" />
+            <Parameter Name="remainder" Mode="In" Type="String" />
+            <Parameter Name="timeZone" Mode="In" Type="String" />
+            <Parameter Name="isActive" Mode="In" Type="Int32" />
+            <Parameter Name="users" Mode="In" Type="String" />
+            <Parameter Name="removeUsers" Mode="In" Type="String" />
+            <Parameter Name="usersLength" Mode="In" Type="Int32" />
+            <Parameter Name="removeUsersLength" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="UpdateUserScrumStatus">
+            <Parameter Name="userId" Mode="In" Type="Int32" />
+            <Parameter Name="scrumID" Mode="In" Type="Int32" />
+            <Parameter Name="scrumYesterdayText" Mode="In" Type="String" />
+            <Parameter Name="scrumTodayText" Mode="In" Type="String" />
+            <Parameter Name="blockers" Mode="In" Type="String" />
+          </FunctionImport>
+        </EntityContainer>
+        <ComplexType Name="GetAllScrumUsersByScrumID_Result">
+          <Property Type="String" Name="UserName" Nullable="false" MaxLength="201" />
+          <Property Type="Binary" Name="Image" Nullable="true" />
+        </ComplexType>
+        <ComplexType Name="GetAllUserNames_Result">
+          <Property Type="String" Name="FirstName" Nullable="false" MaxLength="100" />
+          <Property Type="String" Name="LastName" Nullable="false" MaxLength="100" />
+        </ComplexType>
+        <ComplexType Name="GetUserDeatilsByEmailAndPassword_Result">
+          <Property Type="Int32" Name="UserID" Nullable="false" />
+          <Property Type="String" Name="Password" Nullable="true" MaxLength="30" />
+          <Property Type="String" Name="FirstName" Nullable="false" MaxLength="100" />
+          <Property Type="String" Name="LastName" Nullable="false" MaxLength="100" />
+        </ComplexType>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="ScrumDBModelStoreContainer" CdmEntityContainer="ScrumEntities">
+          <EntitySetMapping Name="Scrums">
+            <EntityTypeMapping TypeName="ScrumDBModel.Scrum">
+              <MappingFragment StoreEntitySet="Scrum">
+                <ScalarProperty Name="ScrumID" ColumnName="ScrumID" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="DailyOccursTime" ColumnName="DailyOccursTime" />
+                <ScalarProperty Name="DaysOfOccurence" ColumnName="DaysOfOccurence" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Remainder" ColumnName="Remainder" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="TimeZone" ColumnName="TimeZone" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="UserDetails">
+            <EntityTypeMapping TypeName="ScrumDBModel.UserDetail">
+              <MappingFragment StoreEntitySet="UserDetails">
+                <ScalarProperty Name="UserID" ColumnName="UserID" />
+                <ScalarProperty Name="FirstName" ColumnName="FirstName" />
+                <ScalarProperty Name="LastName" ColumnName="LastName" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="Password" ColumnName="Password" />
+                <ScalarProperty Name="Image" ColumnName="Image" />
+                <ScalarProperty Name="TimeZone" ColumnName="TimeZone" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="UserScrums">
+            <EntityTypeMapping TypeName="ScrumDBModel.UserScrum">
+              <MappingFragment StoreEntitySet="UserScrum">
+                <ScalarProperty Name="UserScrumID" ColumnName="UserScrumID" />
+                <ScalarProperty Name="UserID" ColumnName="UserID" />
+                <ScalarProperty Name="ScrumID" ColumnName="ScrumID" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="UserScrumDetailBlockers">
+            <EntityTypeMapping TypeName="ScrumDBModel.UserScrumDetailBlocker">
+              <MappingFragment StoreEntitySet="UserScrumDetailBlocker">
+                <ScalarProperty Name="UserScrumDetailBlockerID" ColumnName="UserScrumDetailBlockerID" />
+                <ScalarProperty Name="UserScrumID" ColumnName="UserScrumID" />
+                <ScalarProperty Name="Date" ColumnName="Date" />
+                <ScalarProperty Name="Blocker" ColumnName="Blocker" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="UserScrumDetailTodayTasks">
+            <EntityTypeMapping TypeName="ScrumDBModel.UserScrumDetailTodayTask">
+              <MappingFragment StoreEntitySet="UserScrumDetailTodayTask">
+                <ScalarProperty Name="UserScrumDetailTodayTask1" ColumnName="UserScrumDetailTodayTask" />
+                <ScalarProperty Name="UserScrumID" ColumnName="UserScrumID" />
+                <ScalarProperty Name="Date" ColumnName="Date" />
+                <ScalarProperty Name="Task" ColumnName="Task" />
+                <ScalarProperty Name="Priority" ColumnName="Priority" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="UserScrumDetailYesterdayTasks">
+            <EntityTypeMapping TypeName="ScrumDBModel.UserScrumDetailYesterdayTask">
+              <MappingFragment StoreEntitySet="UserScrumDetailYesterdayTask">
+                <ScalarProperty Name="UserScrumDetailYesterdayTaskID" ColumnName="UserScrumDetailYesterdayTaskID" />
+                <ScalarProperty Name="UserScrumID" ColumnName="UserScrumID" />
+                <ScalarProperty Name="Date" ColumnName="Date" />
+                <ScalarProperty Name="Task" ColumnName="Task" />
+                <ScalarProperty Name="Priority" ColumnName="Priority" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="UserScrumDetailParkingLots">
+            <EntityTypeMapping TypeName="ScrumDBModel.UserScrumDetailParkingLot">
+              <MappingFragment StoreEntitySet="UserScrumDetailParkingLot">
+                <ScalarProperty Name="UserScrumDetailParkingLotID" ColumnName="UserScrumDetailParkingLotID" />
+                <ScalarProperty Name="UserScrumID" ColumnName="UserScrumID" />
+                <ScalarProperty Name="Date" ColumnName="Date" />
+                <ScalarProperty Name="ParkingLot" ColumnName="ParkingLot" />
+                <ScalarProperty Name="Priority" ColumnName="Priority" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="AddUserScrumStatus" FunctionName="ScrumDBModel.Store.AddUserScrumStatus" />
+          <FunctionImportMapping FunctionImportName="DeleteScrum" FunctionName="ScrumDBModel.Store.DeleteScrum" />
+          <FunctionImportMapping FunctionImportName="GetAllScrumUsersByScrumID" FunctionName="ScrumDBModel.Store.GetAllScrumUsersByScrumID">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="ScrumDBModel.GetAllScrumUsersByScrumID_Result">
+                <ScalarProperty Name="UserName" ColumnName="UserName" />
+                <ScalarProperty Name="Image" ColumnName="Image" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="GetAllUserNames" FunctionName="ScrumDBModel.Store.GetAllUserNames">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="ScrumDBModel.GetAllUserNames_Result">
+                <ScalarProperty Name="FirstName" ColumnName="FirstName" />
+                <ScalarProperty Name="LastName" ColumnName="LastName" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="GetUserDeatilsByEmailAndPassword" FunctionName="ScrumDBModel.Store.GetUserDeatilsByEmailAndPassword">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="ScrumDBModel.GetUserDeatilsByEmailAndPassword_Result">
+                <ScalarProperty Name="UserID" ColumnName="UserID" />
+                <ScalarProperty Name="Password" ColumnName="Password" />
+                <ScalarProperty Name="FirstName" ColumnName="FirstName" />
+                <ScalarProperty Name="LastName" ColumnName="LastName" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="RegisterNewUserDetails" FunctionName="ScrumDBModel.Store.RegisterNewUserDetails" />
+          <FunctionImportMapping FunctionImportName="ResetPassword" FunctionName="ScrumDBModel.Store.ResetPassword" />
+          <FunctionImportMapping FunctionImportName="UpdateScrumDetails" FunctionName="ScrumDBModel.Store.UpdateScrumDetails" />
+          <FunctionImportMapping FunctionImportName="UpdateUserScrumStatus" FunctionName="ScrumDBModel.Store.UpdateUserScrumStatus" />
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="true" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
